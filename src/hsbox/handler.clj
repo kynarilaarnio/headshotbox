@@ -240,7 +240,7 @@
               (.setNonceVerifier (InMemoryNonceVerifier. (/ max-nonce-age 1000))))]
     (-> app-routes
         (friend/authenticate {:workflows
-                              [(openid/workflow :openid-uri "/openid"
+                              [(openid/workflow :openid-uri "/hsbox/openid"
                                                 :login-failure-handler (fn [_] (print "login-failure-handler") (redirect "index.html"))
                                                 :realm (:realm @openid-settings)
                                                 :credential-fn credential-fn

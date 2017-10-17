@@ -8,6 +8,7 @@
     "bignumber.js": "~1.4",
     "highcharts-ng": "0.0.8",
     "highcharts-release": "v4.1.7",
-    "font-awesome-animation": "0.0.10"
+    "font-awesome-animation": "0.0.10",
+    "font-awesome": "^4.7.0"
   }
 }
