@@ -6,9 +6,9 @@
       <thead>
         <tr>
           <th>Player</th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(last_rank == null ? 0 : last_rank)'">MM Rank</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-demos'">Demos</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(last_timestamp == null ? 0 : last_timestamp)'">Last Played</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills)'">Kills</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills / stats.deaths)'">KDR</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-demos'">Games</a></th>
         </tr>
       </thead>
       <tr ng-repeat="player in players | orderBy:orderPlayers">
@@ -17,12 +17,14 @@
           <a href="#/player/{{player.steamid}}">{{player.personaname ? player.personaname : player.name}}</a>
         </td>
         <td class="text-center">
-          <img ng-if="player.last_rank" ng-src="img/ranks/{{player.last_rank}}.png" width="50"/>
+          {{player.stats.kills}}
+        </td>
+        <td class="text-center">
+          {{player.stats.kills / player.stats.deaths | number:2}}
         </td>
         <td class="text-center">
           {{player.demos}}
         </td>
-        <td class="text-center">{{player.last_date}}</td>
       </tr>
     </table>
     <div class="text-center">

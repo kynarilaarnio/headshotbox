@@ -685,7 +685,7 @@ hsboxControllers.controller('Player', function ($scope, $http, $routeParams, $ro
 hsboxControllers.controller('PlayerList', function ($scope, $http) {
     $scope.playerCount = 0;
     $scope.currentPage = 1;
-    $scope.playersPerPage = 50;
+    $scope.playersPerPage = 500;
     $scope.folders = [];
     $scope.folder = null;
     $scope.pageChanged = function() {
@@ -695,10 +695,14 @@ hsboxControllers.controller('PlayerList', function ($scope, $http) {
             limit: $scope.playersPerPage}}).success(function (data) {
             $scope.players = data.players;
             $scope.playerCount = data.player_count;
-            $scope.orderPlayers = '-demos';
+            $scope.orderPlayers = '-stats.kills';
             for (var i in $scope.players) {
+                let foo = $scope.players[i];
                 player = $scope.players[i];
                 player.last_date = timestamp2date(player.last_timestamp, true);
+                $http.get(serverUrl + '/player/' + player.steamid + '/stats').success(function(data) {
+                    foo.stats = data;
+                });
             }
             var steamIds = $scope.players.map(function(p) { return p.steamid; });
             var url = getPlayerSummaries(steamIds);
