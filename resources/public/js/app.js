@@ -1,4 +1,4 @@
-var serverUrl = '/api';
+var serverUrl = 'api';
 
 var hsboxApp = angular.module('hsboxApp', ['ui.bootstrap', 'ngRoute', 'hsboxControllers', 'highcharts-ng']);
 
