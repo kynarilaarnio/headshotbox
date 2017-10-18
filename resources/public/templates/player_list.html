@@ -20,7 +20,7 @@
           <a href="#/player/{{player.steamid}}">{{player.personaname ? player.personaname : player.name}}</a>
         </td>
         <td class="text-center">
-          {{player.stats.rating}}
+          {{player.stats.rating | number:2}}
         </td>
         <td class="text-center">
           {{player.stats.kills}}
