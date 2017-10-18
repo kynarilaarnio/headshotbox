@@ -6,11 +6,11 @@
       <thead>
         <tr>
           <th>Player</th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.rating)'">HLTV Rating</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.rating == null ? 0 : stats.rating)'">HLTV Rating</a></th>
           <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills)'">Kills</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills / stats.deaths)'">K/D</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills / stats.rounds)'">KPR</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.damage / stats.rounds_with_damage_info)'">ADR</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null || stats.deaths == null ? 0 : stats.kills / stats.deaths)'">K/D</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null || stats.rounds == null ? 0 : stats.kills / stats.rounds)'">KPR</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.damage == null || stats.rounds_with_damage_info ? 0 : stats.damage / stats.rounds_with_damage_info)'">ADR</a></th>
           <th class="text-center"><a ng-click="orderPlayers = '-demos'">Games</a></th>
         </tr>
       </thead>
