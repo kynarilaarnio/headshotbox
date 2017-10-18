@@ -57,59 +57,63 @@
       <i class="fa fa-spinner fa-pulse"></i> Searching...
     </div>
 
-    <table class="table table-hover" ng-if="rounds">
-      <thead>
-        <tr>
-          <th class="text-left"><a ng-click="setOrder('timestamp')">Date</a></th>
-          <th class="text-left">Map</th>
-          <th class="text-center">Side</th>
-          <th class="text-center"><a ng-click="setOrder('round')">Round</a></th>
-          <th class="text-center" ng-if="!steamid">Player</th>
-          <th class="text-center">Kills</th>
-          <th class="text-center">Won?</th>
-          <th class="text-center">Watch</th>
-          <th class="text-center" ng-if="steamid">Demo</th>
-        </tr>
-      </thead>
-      <tbody ng-repeat="round in rounds | orderBy:orderRounds">
-        <tr>
-          <td class="text-left">{{round.date}}</td>
-          <td class="text-left">{{round.map}}</td>
-          <td class="text-center" ng-class="{blue: round.side == 'CT', red: round.side == 'T'}">{{round.side}}</td>
-          <td class="text-center">{{round.round}}</td>
-          <td class="text-left" ng-if="!steamid">
-            <a href="http://steamcommunity.com/profiles/{{round.steamid}}" ng-if="players[round.steamid].avatar"><img ng-src="{{players[round.steamid].avatar}}" class="list-avatar"/></a>
-            <a href="#/player/{{round.steamid}}">{{players[round.steamid].personaname ? players[round.steamid].personaname : players[round.steamid].name}}</a>
-          </td>
-          <td class="text-left">
-            <div ng-repeat="kill in round.kills">
-              {{kill.kills + "x"}}
-              <img ng-src="img/weapons/icon-{{kill.weapon}}{{kill.noscope ? '_noscope' : ''}}_grey.png" height="20" ng-class="{tilted: kill.air}" title="{{kill_description(kill)}}"/>
-              <img ng-if="kill.smoke" src="img/weapons/smoke_grey.png" height="20" title="{{kill_description(kill)}}"/>
-              <img ng-if="kill.penetrated" src="img/weapons/icon-penetrate_grey.png" height="20" title="{{kill_description(kill)}}"/>
-              <img ng-if="kill.headshot" src="img/weapons/icon-headshot_grey.png" height="20" title="{{kill_description(kill)}}"/>
-            </div>
-          </td>
-          <td class="text-center" ng-class="{green: round.won, red: !round.won}">{{round.won_str}}</td>
-          <td class="text-center">
-            <button type="button" class="btn btn-success btn-xs" ng-click="downloadDemo(round.demoid)" ng-if="$root.config.demo_download_enabled">
-              <i class="fa fa-download"></i>
-            </button>
-            <button type="button" class="btn btn-success btn-xs" ng-click="watchDemo(round.demoid, round.steamid, round.round)">
-              <i class="fa fa-play-circle"></i>
-            </button>
-          </td>
-          <td ng-click="makeVisible(round.demoid, round.round)" class="clickable text-center" ng-if="steamid">
-            <i class="pull-right glyphicon"
-               ng-class="{'glyphicon-chevron-down': isVisible(round.demoid, round.round), 'glyphicon-chevron-right': !isVisible(round.demoid, round.round)}"/>
-          </td>
-        </tr>
-        <tr ng-if="isVisible(round.demoid, round.round) && steamid">
-          <td colspan="9">
-            <div ng-include src="'templates/demo.html'"></div>
-          </td>
-        </tr>
-      <tbody>
-    </table>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <table class="table table-hover" ng-if="rounds">
+          <thead>
+            <tr>
+              <th class="text-left"><a ng-click="setOrder('timestamp')">Date</a></th>
+              <th class="text-left">Map</th>
+              <th class="text-center">Side</th>
+              <th class="text-center"><a ng-click="setOrder('round')">Round</a></th>
+              <th class="text-center" ng-if="!steamid">Player</th>
+              <th class="text-center">Kills</th>
+              <th class="text-center">Won?</th>
+              <th class="text-center">Watch</th>
+              <th class="text-center" ng-if="steamid">Demo</th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="round in rounds | orderBy:orderRounds">
+            <tr>
+              <td class="text-left">{{round.date}}</td>
+              <td class="text-left">{{round.map}}</td>
+              <td class="text-center" ng-class="{blue: round.side == 'CT', red: round.side == 'T'}">{{round.side}}</td>
+              <td class="text-center">{{round.round}}</td>
+              <td class="text-left" ng-if="!steamid">
+                <a href="http://steamcommunity.com/profiles/{{round.steamid}}" ng-if="players[round.steamid].avatar"><img ng-src="{{players[round.steamid].avatar}}" class="list-avatar"/></a>
+                <a href="#/player/{{round.steamid}}">{{players[round.steamid].personaname ? players[round.steamid].personaname : players[round.steamid].name}}</a>
+              </td>
+              <td class="text-left">
+                <div ng-repeat="kill in round.kills">
+                  {{kill.kills + "x"}}
+                  <img ng-src="img/weapons/icon-{{kill.weapon}}{{kill.noscope ? '_noscope' : ''}}_grey.png" height="20" ng-class="{tilted: kill.air}" title="{{kill_description(kill)}}"/>
+                  <img ng-if="kill.smoke" src="img/weapons/smoke_grey.png" height="20" title="{{kill_description(kill)}}"/>
+                  <img ng-if="kill.penetrated" src="img/weapons/icon-penetrate_grey.png" height="20" title="{{kill_description(kill)}}"/>
+                  <img ng-if="kill.headshot" src="img/weapons/icon-headshot_grey.png" height="20" title="{{kill_description(kill)}}"/>
+                </div>
+              </td>
+              <td class="text-center" ng-class="{green: round.won, red: !round.won}">{{round.won_str}}</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-success btn-xs" ng-click="downloadDemo(round.demoid)" ng-if="$root.config.demo_download_enabled">
+                  <i class="fa fa-download"></i>
+                </button>
+                <button type="button" class="btn btn-success btn-xs" ng-click="watchDemo(round.demoid, round.steamid, round.round)">
+                  <i class="fa fa-play-circle"></i>
+                </button>
+              </td>
+              <td ng-click="makeVisible(round.demoid, round.round)" class="clickable text-center" ng-if="steamid">
+                <i class="pull-right glyphicon"
+                   ng-class="{'glyphicon-chevron-down': isVisible(round.demoid, round.round), 'glyphicon-chevron-right': !isVisible(round.demoid, round.round)}"/>
+              </td>
+            </tr>
+            <tr ng-if="isVisible(round.demoid, round.round) && steamid">
+              <td colspan="9">
+                <div ng-include src="'templates/demo.html'"></div>
+              </td>
+            </tr>
+          <tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
