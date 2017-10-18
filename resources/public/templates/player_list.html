@@ -6,8 +6,11 @@
       <thead>
         <tr>
           <th>Player</th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.rating)'">HLTV Rating</a></th>
           <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills)'">Kills</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills / stats.deaths)'">KDR</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills / stats.deaths)'">K/D</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills / stats.rounds)'">KPR</a></th>
+          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.damage / stats.rounds_with_damage_info)'">ADR</a></th>
           <th class="text-center"><a ng-click="orderPlayers = '-demos'">Games</a></th>
         </tr>
       </thead>
@@ -17,10 +20,19 @@
           <a href="#/player/{{player.steamid}}">{{player.personaname ? player.personaname : player.name}}</a>
         </td>
         <td class="text-center">
+          {{player.stats.rating}}
+        </td>
+        <td class="text-center">
           {{player.stats.kills}}
         </td>
         <td class="text-center">
           {{player.stats.kills / player.stats.deaths | number:2}}
+        </td>
+        <td class="text-center">
+          {{player.stats.kills / player.stats.rounds | number:2}}
+        </td>
+        <td class="text-center">
+          {{player.stats.damage / player.stats.rounds_with_damage_info | number:2}}
         </td>
         <td class="text-center">
           {{player.demos}}
