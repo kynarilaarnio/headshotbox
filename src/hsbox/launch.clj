@@ -165,7 +165,7 @@
   (let [demo (get stats/demos demoid)
         demo-path (:path demo)
         vdm-path (str (subs demo-path 0 (- (count demo-path) 4)) ".vdm")
-        play-path (if local? demo-path (str "replays/" (file-name demo-path)))]
+        play-path (if (:demowebmode (db/get-config)) (str "replays/" (file-name demo-path)) demo-path)]
     (if (nil? demo)
       ""
       (do
