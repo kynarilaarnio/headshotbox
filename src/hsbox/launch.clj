@@ -211,5 +211,5 @@
     (->> (clojure.java.io/as-file path)
          file-seq
          (map #(when (and (.endsWith (.getName %) ".vdm") (generated-by-hsbox %))
-                (delete-vdm (.getAbsolutePath %))))
+                 (delete-vdm (.getAbsolutePath %))))
          dorun)))

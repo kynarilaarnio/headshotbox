@@ -9,12 +9,12 @@
   (:import (java.io File)))
 
 (timbre/refer-timbre)
-(def latest-data-version {"valve"  6
-                          "esea"   6
-                          "faceit" 6
-                          "cevo"   6
-                          "gamersclub"     6
-                          "akl"    6})
+(def latest-data-version {"valve"      6
+                          "esea"       6
+                          "faceit"     6
+                          "cevo"       6
+                          "gamersclub" 6
+                          "akl"        6})
 
 (def schema-version 6)
 ;(set! *warn-on-reflection* true)
@@ -217,10 +217,10 @@
 (defn upgrade-db []
   (let [migration-plan (get-migration-plan)]
     (doall (map #(let [version (first %) procedure (second %)]
-                  (warn "Migrating from schema version" (get-current-schema-version) "to" version)
-                  (with-db-transaction t-con
-                                       (procedure t-con)
-                                       (jdbc/execute! t-con ["UPDATE meta SET value = ? WHERE key = ?" version "schema_version"])))
+                   (warn "Migrating from schema version" (get-current-schema-version) "to" version)
+                   (with-db-transaction t-con
+                                        (procedure t-con)
+                                        (jdbc/execute! t-con ["UPDATE meta SET value = ? WHERE key = ?" version "schema_version"])))
                 migration-plan))))
 
 (defn set-config [dict]

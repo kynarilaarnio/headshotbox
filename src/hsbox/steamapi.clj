@@ -27,9 +27,9 @@
         (->>
           (concat (-> bans :body :players) (-> summaries :body :response :players))
           (reduce #(let [steamid (Long/parseLong (get %2 :steamid (get %2 :SteamId)))]
-                    (assoc % steamid (select-keys
-                                       (merge (get % steamid) %2)
-                                       [:avatar :avatarfull :personaname :NumberOfVACBans :DaysSinceLastBan :NumberOfGameBans])))
+                     (assoc % steamid (select-keys
+                                        (merge (get % steamid) %2)
+                                        [:avatar :avatarfull :personaname :NumberOfVACBans :DaysSinceLastBan :NumberOfGameBans])))
                   {})
           (db/update-steamids))))))
 

@@ -51,11 +51,11 @@
         sort-by-date (fn [c] (sort #(compare (:timestamp %2) (:timestamp %)) c))
         players (->> player-demos
                      (reduce-kv #(let [filtered-demos (vals (folder-filtered %3))]
-                                  (conj % {:steamid        %2
-                                           :demos          (count filtered-demos)
-                                           :last_timestamp (-> (sort-by-date filtered-demos) (first) (:timestamp))
-                                           :last_rank      (get-last-rank %2)
-                                           :name           (get-player-name-in-demo %2 (first filtered-demos))})) [])
+                                   (conj % {:steamid        %2
+                                            :demos          (count filtered-demos)
+                                            :last_timestamp (-> (sort-by-date filtered-demos) (first) (:timestamp))
+                                            :last_rank      (get-last-rank %2)
+                                            :name           (get-player-name-in-demo %2 (first filtered-demos))})) [])
                      (filter #(>= (:demos %) (:playerlist_min_demo_count (get-config) 2)))
                      (sort #(compare (:demos %2) (:demos %))))
         player_count (count players)
@@ -284,24 +284,24 @@
 
 (defn filter-demos [steamid {:keys [folder demo-type start-date end-date map-name teammates]} demos]
   (filter #(and
-            (if folder (= (:folder %) folder) true)
-            (if (contains? (-> latest-data-version keys set) demo-type) (= demo-type (:type %)) true)
-            (if map-name (= (:map %) map-name) true)
-            (if start-date (>= (:timestamp %) start-date) true)
-            (if end-date (<= (:timestamp %) end-date) true)
-            (if (empty? teammates) true (subset? teammates (get-teammates % steamid)))
-            )
+             (if folder (= (:folder %) folder) true)
+             (if (contains? (-> latest-data-version keys set) demo-type) (= demo-type (:type %)) true)
+             (if map-name (= (:map %) map-name) true)
+             (if start-date (>= (:timestamp %) start-date) true)
+             (if end-date (<= (:timestamp %) end-date) true)
+             (if (empty? teammates) true (subset? teammates (get-teammates % steamid)))
+             )
           demos))
 
 (defn update-map-stats-with-demo [stats demo]
   (let [steamid (:steamid stats)
         rounds-stats (reduce
                        #(let [round-team (team-number steamid %2)]
-                         (-> %
-                             (inc-stat-maybe :t_rounds (= 2 round-team))
-                             (inc-stat-maybe :ct_rounds (= 3 round-team))
-                             (inc-stat-maybe :ct_rounds_won (and (= 3 round-team (:winner %2))))
-                             (inc-stat-maybe :t_rounds_won (and (= 2 round-team (:winner %2))))))
+                          (-> %
+                              (inc-stat-maybe :t_rounds (= 2 round-team))
+                              (inc-stat-maybe :ct_rounds (= 3 round-team))
+                              (inc-stat-maybe :ct_rounds_won (and (= 3 round-team (:winner %2))))
+                              (inc-stat-maybe :t_rounds_won (and (= 2 round-team (:winner %2))))))
                        {}
                        (:rounds demo))
         stats (assoc stats (:map demo) (merge-with
@@ -351,6 +351,34 @@
                    (assoc :round-filter (get-round-filter filters)))))
     (cleanup-stats)))
 
+(defn get-players-with-ranks
+  "Returns a list of players filtered by the parameters.
+
+  Each player will have steamid info attached if it's present in the database"
+  [folder offset limit filters]
+  (let [folder-filtered (fn [m] (if (nil? folder)
+                                  m
+                                  (select-keys m (for [[k v] m :when (= (:folder v) folder)] k))))
+        sort-by-date (fn [c] (sort #(compare (:timestamp %2) (:timestamp %)) c))
+        players (->> player-demos
+                     (reduce-kv #(let [filtered-demos (vals (folder-filtered %3))]
+                                   (conj % {:steamid        %2
+                                            :demos          (count filtered-demos)
+                                            :last_timestamp (-> (sort-by-date filtered-demos) (first) (:timestamp))
+                                            :last_rank      (get-last-rank %2)
+                                            :name           (get-player-name-in-demo %2 (first filtered-demos))
+                                            :stats          (get-stats-for-steamid %2 filters)})) [])
+                     (filter #(>= (:demos %) (:playerlist_min_demo_count (get-config) 2)))
+                     (sort #(compare (:demos %2) (:demos %))))
+        player_count (count players)
+        players (->> players
+                     (drop offset)
+                     (take limit))
+        steam-info (steamapi/get-steamids-info-cached (map :steamid players))
+        players (map #(assoc % :steam_info (get steam-info (:steamid %))) players)]
+    {:player_count player_count
+     :players      (map #(assoc % :steamid (str (:steamid %))) players)}))
+
 (defn add-score [demo]
   (let [reverse? (= 3 (team-number (:steamid demo) (first (:rounds demo))))]
     (assoc demo
@@ -380,26 +408,26 @@
                                (disj steamid))))
         played-with (mapcat get-players-data demos)
         players (reduce #(let [already (get % (first %2) {:timestamp 0})]
-                          (assoc % (first %2) {:timestamp (max (second %2) (:timestamp already))
-                                               :opponent  (if (< (:timestamp already) (second %2))
-                                                            (last %2)
-                                                            (:opponent already))}))
+                           (assoc % (first %2) {:timestamp (max (second %2) (:timestamp already))
+                                                :opponent  (if (< (:timestamp already) (second %2))
+                                                             (last %2)
+                                                             (:opponent already))}))
                         {}
                         played-with)
         steam-info (apply hash-map (mapcat #(vector (:steamid %) (dissoc % :timestamp)) (db/get-steamid-info (keys players))))
         now (current-timestamp)]
     (->>
       (filter #(let [info (get steam-info (key %))]
-                (and info
-                     (:NumberOfVACBans info)
-                     (:NumberOfGameBans info)
-                     (or (pos? (:NumberOfVACBans info)) (pos? (:NumberOfGameBans info)))
-                     (>= (- now (* 3600 24 (:DaysSinceLastBan info))) (:timestamp (val %)))))
+                 (and info
+                      (:NumberOfVACBans info)
+                      (:NumberOfGameBans info)
+                      (or (pos? (:NumberOfVACBans info)) (pos? (:NumberOfGameBans info)))
+                      (>= (- now (* 3600 24 (:DaysSinceLastBan info))) (:timestamp (val %)))))
               players)
       (map #(assoc
-             (merge (val %) (get steam-info (key %)))
-             :steamid
-             (str (key %)))))))
+              (merge (val %) (get steam-info (key %)))
+              :steamid
+              (str (key %)))))))
 
 (defn append-ban-info [steamid]
   (let [banned (get-banned-players steamid false {})]
@@ -434,9 +462,9 @@
         convert-death-steamid (fn [death]
                                 (->
                                   (reduce-kv #(if
-                                               (get #{:assister :victim :attacker} %2)
-                                               (assoc % %2 (str %3))
-                                               (assoc % %2 %3))
+                                                (get #{:assister :victim :attacker} %2)
+                                                (assoc % %2 (str %3))
+                                                (assoc % %2 %3))
                                              {} death)
                                   (assoc :weapon_name (weapon-name (:weapon death)))))
         convert-if-exists (fn [round key]
@@ -462,15 +490,16 @@
   (let [demo (get demos demoid)]
     (->
       (->> (map #(assoc (stats-for-demo demo (first %))
-                  :team (:team (second %))
-                  :steamid (str (first %))
-                  :name (:name (second %))
-                  :mm_rank_update (get-in demo [:mm_rank_update (first %)]))
+                   :team (:team (second %))
+                   :steamid (str (first %))
+                   :name (:name (second %))
+                   :mm_rank_update (get-in demo [:mm_rank_update (first %)]))
                 (seq (:players demo)))
            (group-by #(:team %))
            (assoc (select-keys demo [:score :winner :surrendered :detailed_score :timestamp :duration :map :type :demoid]) :teams))
       (merge {:rounds (map #(select-keys % [:tick]) (:rounds demo))
               :path   (:path demo)}))))
+
 
 ; Search round
 
@@ -580,7 +609,7 @@
                       :air        (air-kill? %2)
                       :quickscope (quick-scope? %2 demo)
                       :noscope    (no-scope? %2)}]
-            (assoc % key (+ 1 (get % key 0))))
+             (assoc % key (+ 1 (get % key 0))))
           {} (filter #(and (= (:attacker %) steamid) (not-tk % round demo)) (:deaths round))))
 
 (defn filter-rounds [demo steamid filters]

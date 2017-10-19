@@ -149,8 +149,8 @@
              (authorize-admin
                (defroutes indexer-routes
                           (GET "/" []
-                            (response {:running (indexer/is-running?)
-                                       :parsing (indexer/is-parsing?)
+                            (response {:running    (indexer/is-running?)
+                                       :parsing    (indexer/is-parsing?)
                                        :demos_left (indexer/demos-left)}))
                           (POST "/" {state :body}
                             (indexer/set-indexing-state (:running state))
@@ -185,8 +185,12 @@
                         :latest  @version/latest-version}))
            (GET "/folders" []
              (response (stats/get-folders)))
-           (GET "/players" [folder offset limit]
-             (response (stats/get-players folder (parse-long offset 0) (parse-long limit 5000)))))
+           (GET "/players" [req folder offset limit]
+             (response (stats/get-players-with-ranks
+                         folder
+                         (parse-long offset 0)
+                         (parse-long limit 5000)
+                         (parse-filters (get req :params))))))
 
 (defn api-handlers [routes]
   (-> routes

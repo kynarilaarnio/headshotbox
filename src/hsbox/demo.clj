@@ -234,15 +234,15 @@
         ; Compare the score_changed event against the one from last round
         guess-winner (fn []
                        (real-team demo
-                         (if (nil? (:last_score_changed demo))
-                           (do
-                             (assert (and (= 1 (apply + score-changed)) (#{0 1} (first score-changed)) (#{0 1} (second score-changed))))
-                             (if (= 1 (first score-changed))
-                               2
-                               3))
-                           (if (< (first (:last_score_changed demo)) (first score-changed))
-                             2
-                             3))))
+                                  (if (nil? (:last_score_changed demo))
+                                    (do
+                                      (assert (and (= 1 (apply + score-changed)) (#{0 1} (first score-changed)) (#{0 1} (second score-changed))))
+                                      (if (= 1 (first score-changed))
+                                        2
+                                        3))
+                                    (if (< (first (:last_score_changed demo)) (first score-changed))
+                                      2
+                                      3))))
         round-winner (if (not round-end-missing)
                        (:winner round)
                        (guess-winner))]
@@ -291,15 +291,15 @@
     (reduce-kv update-players demo (:players round))
     ; Detect overtime MR6/MR10
     (#(if (and (not= (get % :teams_switched?) (:teams_switched? demo)) (#{34 36} (:number round)))
-       (assoc % :mr (- (:number round) 31))
-       %))
+        (assoc % :mr (- (:number round) 31))
+        %))
     ; Start a new score table if overtime started (round 31 - we still don't know MR rules at this point)
     ; or teams switched or we're in overtime but teams switched last half
     (#(if (or (= (:number round) 31)
               (not= (get % :teams_switched?) (:teams_switched? demo))
               (check-ot-half-started (:mr demo) (:number round)))
-       (update-in % [:detailed_score] conj [0 0])
-       %))
+        (update-in % [:detailed_score] conj [0 0])
+        %))
     (update-score round)))
 
 (defn enrich-demo [demo]
