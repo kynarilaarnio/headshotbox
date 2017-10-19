@@ -692,7 +692,7 @@ hsboxControllers.controller('PlayerList', function ($scope, $http) {
         $http.get(serverUrl + '/players', {params: {
             folder: $scope.folder,
             offset: ($scope.currentPage - 1) * $scope.playersPerPage,
-            limit: $scope.playersPerPage}}).success(function (data) {
+            limit: $scope.playersPerPage}}).success(function(data) {
             $scope.players = data.players;
             $scope.playerCount = data.player_count;
             $scope.orderPlayers = '-(stats.rating == null ? 0 : stats.rating)';

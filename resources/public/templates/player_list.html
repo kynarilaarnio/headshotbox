@@ -1,64 +1,76 @@
 <h1>Player List</h1>
 <div class="col-md-3"></div>
 <div class="col-md-6 panel panel-default">
-  <div class="panel-body">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Player</th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.rating == null ? 0 : stats.rating)'">HLTV Rating</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills)'">Kills</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null || stats.deaths == null ? 0 : stats.kills / stats.deaths)'">K/D</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null || stats.rounds == null ? 0 : stats.kills / stats.rounds)'">KPR</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-(stats.damage == null || stats.rounds_with_damage_info ? 0 : stats.damage / stats.rounds_with_damage_info)'">ADR</a></th>
-          <th class="text-center"><a ng-click="orderPlayers = '-demos'">Games</a></th>
-        </tr>
-      </thead>
-      <tr ng-repeat="player in players | orderBy:orderPlayers">
-        <td>
-          <a href="http://steamcommunity.com/profiles/{{player.steamid}}" ng-if="player.avatar"><img ng-src="{{player.avatar}}" class="list-avatar"/></a>
-          <a href="#/player/{{player.steamid}}">{{player.personaname ? player.personaname : player.name}}</a>
-        </td>
-        <td class="text-center">
-          {{player.stats.rating | number:2}}
-        </td>
-        <td class="text-center">
-          {{player.stats.kills}}
-        </td>
-        <td class="text-center">
-          {{player.stats.kills / player.stats.deaths | number:2}}
-        </td>
-        <td class="text-center">
-          {{player.stats.kills / player.stats.rounds | number:2}}
-        </td>
-        <td class="text-center">
-          {{player.stats.damage / player.stats.rounds_with_damage_info | number:2}}
-        </td>
-        <td class="text-center">
-          {{player.demos}}
-        </td>
-      </tr>
-    </table>
-    <div class="text-center">
-      <pagination direction-links="false"
-                  boundary-links="true"
-                  boundary-link-numbers="true"
-                  total-items="playerCount"
-                  ng-model="currentPage"
-                  items-per-page="playersPerPage"
-                  max-size="10"
-                  rotate="true"
-                  ng-change="pageChanged()"></pagination>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Player</th>
+                    <th class="text-center"><a ng-click="orderPlayers = '-(stats.rating == null ? 0 : stats.rating)'">HLTV
+                        Rating</a></th>
+                    <th class="text-center"><a ng-click="orderPlayers = '-(stats.kills == null ? 0 : stats.kills)'">Kills</a>
+                    </th>
+                    <th class="text-center"><a
+                            ng-click="orderPlayers = '-(stats.kills == null || stats.deaths == null ? 0 : stats.kills / stats.deaths)'">K/D</a>
+                    </th>
+                    <th class="text-center"><a
+                            ng-click="orderPlayers = '-(stats.kills == null || stats.rounds == null ? 0 : stats.kills / stats.rounds)'">KPR</a>
+                    </th>
+                    <th class="text-center"><a
+                            ng-click="orderPlayers = '-(stats.damage == null || stats.rounds_with_damage_info ? 0 : stats.damage / stats.rounds_with_damage_info)'">ADR</a>
+                    </th>
+                    <th class="text-center"><a ng-click="orderPlayers = '-demos'">Games</a></th>
+                </tr>
+                </thead>
+                <tr ng-repeat="player in players | orderBy:orderPlayers">
+                    <td>
+                        <a href="http://steamcommunity.com/profiles/{{player.steamid}}" ng-if="player.avatar"><img
+                                ng-src="{{player.avatar}}" class="list-avatar"/></a>
+                        <a href="#/player/{{player.steamid}}">{{player.personaname ? player.personaname :
+                            player.name}}</a>
+                    </td>
+                    <td class="text-center">
+                        {{player.stats.rating | number:2}}
+                    </td>
+                    <td class="text-center">
+                        {{player.stats.kills}}
+                    </td>
+                    <td class="text-center">
+                        {{player.stats.kills / player.stats.deaths | number:2}}
+                    </td>
+                    <td class="text-center">
+                        {{player.stats.kills / player.stats.rounds | number:2}}
+                    </td>
+                    <td class="text-center">
+                        {{player.stats.damage / player.stats.rounds_with_damage_info | number:2}}
+                    </td>
+                    <td class="text-center">
+                        {{player.demos}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!--<div class="text-center">
+          <pagination direction-links="false"
+                      boundary-links="true"
+                      boundary-link-numbers="true"
+                      total-items="playerCount"
+                      ng-model="currentPage"
+                      items-per-page="playersPerPage"
+                      max-size="10"
+                      rotate="true"
+                      ng-change="pageChanged()"></pagination>
+        </div>-->
     </div>
-  </div>
 </div>
 <div class="col-md-3">
-  <div class="form-group btn-group dropdown inline">
-    <button type="button" class="btn btn-default dropdown-toggle no-bg">
-      Folder: {{folder ? folder : "ALL"}} <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li ng-repeat="folder in folders"><a ng-click="setFolder(folder)">{{folder ? folder : "ALL"}}</a></li>
-    </ul>
-  </div>
+    <div class="form-group btn-group dropdown inline">
+        <button type="button" class="btn btn-primary dropdown-toggle no-bg">
+            Folder: {{folder ? folder : "ALL"}} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="folder in folders"><a ng-click="setFolder(folder)">{{folder ? folder : "ALL"}}</a></li>
+        </ul>
+    </div>
 </div>
